@@ -1,0 +1,163 @@
+
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2, Save, Cloud, FolderKey } from 'lucide-react';
+import { doc, setDoc } from 'firebase/firestore';
+import { useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { DriveSettingsInfo } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
+
+/**
+ * Extracts a Google Drive folder ID from a full URL or returns the raw ID.
+ * Supports formats like:
+ * - https://drive.google.com/drive/folders/1abc123xyz
+ * - https://drive.google.com/drive/folders/1abc123xyz?usp=sharing
+ * - https://drive.google.com/drive/u/0/folders/1abc123xyz?hl=ID
+ * - 1abc123xyz (raw ID)
+ * - 1abc123xyz?hl=ID (raw ID with query params)
+ */
+function extractFolderId(input: string): string {
+  if (!input) return '';
+  const trimmed = input.trim();
+  // Match folder ID from various Google Drive URL patterns
+  const match = trimmed.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  const id = match ? match[1] : trimmed;
+  // Strip query parameters like ?hl=ID or ?usp=sharing
+  return id.split('?')[0].split('#')[0];
+}
+
+export function DriveSettingsForm() {
+  const [googleDriveLink, setGoogleDriveLink] = useState('');
+  const [appsScriptUrl, setAppsScriptUrl] = useState('');
+  const [rootFolderId, setRootFolderId] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
+  const firestore = useFirestore();
+
+  const driveRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'driveSettings', 'default');
+  }, [firestore]);
+
+  const { data: driveData, isLoading } = useDoc<DriveSettingsInfo>(driveRef);
+
+  useEffect(() => {
+    if (driveData) {
+      setGoogleDriveLink(driveData.googleDriveLink || '');
+      setAppsScriptUrl(driveData.appsScriptUrl || '');
+      setRootFolderId(driveData.rootFolderId || '');
+    }
+  }, [driveData]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!firestore || !driveRef) return;
+    setIsSaving(true);
+
+    try {
+      const cleanRootFolderId = extractFolderId(rootFolderId);
+      await setDoc(driveRef, {
+        googleDriveLink,
+        appsScriptUrl: appsScriptUrl.trim(),
+        rootFolderId: cleanRootFolderId
+      }, { merge: true });
+      // Update local state with the cleaned ID
+      setRootFolderId(cleanRootFolderId);
+
+      toast({
+        title: "Pengaturan Tersimpan",
+        description: "Konfigurasi Google Drive telah diperbarui.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Gagal Menyimpan",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) return <Skeleton className="h-64 w-full rounded-2xl" />;
+
+  return (
+    <Card className="border border-slate-200 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs h-full flex flex-col">
+      <CardHeader className="p-3.5 sm:p-6 pb-2.5 sm:pb-4 border-b border-slate-100">
+        <CardTitle className="flex items-center gap-2 text-xs sm:text-base font-bold">
+          <Cloud className="h-4 w-4 text-primary shrink-0" />
+          Konfigurasi Google Drive
+        </CardTitle>
+        <CardDescription className="text-[11px] sm:text-xs">
+          Atur lokasi penyimpanan berkas lampiran pengajuan surat secara dinamis.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-3.5 sm:p-6 pt-3.5 sm:pt-4 flex-1 flex flex-col">
+        <form onSubmit={handleSubmit} className="space-y-3 flex-1 flex flex-col">
+          <div className="space-y-1.5">
+            <Label htmlFor="drive-link" className="text-xs font-semibold">
+              Link Folder Google Drive (Arsip)
+            </Label>
+            <Input
+              id="drive-link"
+              placeholder="https://drive.google.com/drive/folders/..."
+              value={googleDriveLink}
+              onChange={(e) => setGoogleDriveLink(e.target.value)}
+              disabled={isSaving}
+              className="w-full text-xs h-8 sm:h-9"
+            />
+            <p className="text-[10px] text-muted-foreground">
+              Pintasan folder Drive dari panel admin.
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="root-id" className="flex items-center gap-1.5 text-xs font-semibold">
+              <FolderKey className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              ID Folder Utama (ROOT_FOLDER_ID)
+            </Label>
+            <Input
+              id="root-id"
+              placeholder="Contoh: 11BLG6rCUlhcTNKrCmXWFFXTDGzV0SzGvC"
+              value={rootFolderId}
+              onChange={(e) => setRootFolderId(e.target.value)}
+              disabled={isSaving}
+              className="font-mono text-xs w-full h-8 sm:h-9"
+            />
+            <p className="text-[10px] text-muted-foreground">
+              ID folder tempat sistem membuat folder per-pengajuan.
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="script-url" className="text-xs font-semibold">
+              Apps Script Web App URL
+            </Label>
+            <Input
+              id="script-url"
+              placeholder="https://script.google.com/macros/s/.../exec"
+              value={appsScriptUrl}
+              onChange={(e) => setAppsScriptUrl(e.target.value)}
+              disabled={isSaving}
+              className="w-full text-xs h-8 sm:h-9"
+            />
+            <p className="text-[10px] text-muted-foreground">
+              URL endpoint Web App dari Google Apps Script.
+            </p>
+          </div>
+
+          <Button type="submit" disabled={isSaving} className="w-full sm:w-auto h-8 sm:h-9 text-xs mt-auto">
+            {isSaving ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : <Save className="mr-2 h-3.5 w-3.5" />}
+            Simpan Konfigurasi
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}

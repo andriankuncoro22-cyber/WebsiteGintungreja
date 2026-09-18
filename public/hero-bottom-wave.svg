@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 240" fill="none" preserveAspectRatio="none" class="w-full h-full">
+  <defs>
+    <!-- Gradient for Top Soft Sand Ribbon Wave -->
+    <linearGradient id="sandWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F5EFEB" stop-opacity="0.85" />
+      <stop offset="35%" stop-color="#EDE2D5" stop-opacity="0.75" />
+      <stop offset="70%" stop-color="#F3EAE0" stop-opacity="0.70" />
+      <stop offset="100%" stop-color="#FAF6EF" stop-opacity="0.90" />
+    </linearGradient>
+
+    <!-- Gradient for Mid Warm Terracotta & Harvest Amber Wave -->
+    <linearGradient id="terracottaWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D8902A" stop-opacity="0.90" />
+      <stop offset="40%" stop-color="#C25E34" stop-opacity="0.88" />
+      <stop offset="80%" stop-color="#AD4B22" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#8F3714" stop-opacity="0.90" />
+    </linearGradient>
+
+    <!-- Gradient for Bottom Deep Teakwood Wave Accent -->
+    <linearGradient id="teakwoodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#281E18" stop-opacity="0.95" />
+      <stop offset="50%" stop-color="#3D291F" stop-opacity="0.90" />
+      <stop offset="100%" stop-color="#1F1612" stop-opacity="0.95" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Top Soft Sand Ribbon Wave -->
+  <path
+    d="M0,110 C320,80 620,150 960,130 C1300,110 1560,50 1920,70 L1920,240 L0,240 Z"
+    fill="url(#sandWaveGrad)"
+  />
+
+  <!-- 2. Mid Warm Terracotta Flowing Wave -->
+  <path
+    d="M0,210 C380,210 580,140 920,135 C1280,130 1540,75 1920,95 L1920,240 L0,240 Z"
+    fill="url(#terracottaWaveGrad)"
+  />
+
+  <!-- 3. Bottom Deep Teakwood Wave Accent -->
+  <path
+    d="M340,240 C560,195 820,165 1100,175 C1420,185 1680,120 1920,130 L1920,240 Z"
+    fill="url(#teakwoodGrad)"
+  />
+</svg>

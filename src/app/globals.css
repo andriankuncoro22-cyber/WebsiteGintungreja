@@ -1,0 +1,300 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 38 35% 97%;
+    --foreground: 24 25% 12%;
+
+    --card: 40 30% 99%;
+    --card-foreground: 24 25% 12%;
+
+    --popover: 40 30% 99%;
+    --popover-foreground: 24 25% 12%;
+
+    --primary: 18 64% 46%;
+    --primary-foreground: 40 50% 98%;
+
+    --secondary: 38 82% 50%;
+    --secondary-foreground: 24 25% 10%;
+
+    --muted: 36 25% 92%;
+    --muted-foreground: 24 15% 42%;
+
+    --accent: 38 82% 50%;
+    --accent-foreground: 24 25% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 36 20% 88%;
+    --input: 36 20% 88%;
+    --ring: 18 64% 46%;
+
+    --radius: 1.25rem;
+
+    --sidebar-background: 24 25% 11%;
+    --sidebar-foreground: 38 35% 95%;
+    --sidebar-primary: 18 64% 46%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 24 22% 18%;
+    --sidebar-accent-foreground: 38 35% 95%;
+    --sidebar-border: 24 22% 18%;
+    --sidebar-ring: 38 82% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: hsl(var(--primary));
+  color: white;
+}
+
+.warm-gradient {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+}
+
+.soft-shadow {
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -2px rgba(0, 0, 0, 0.01);
+}
+
+.glass-card {
+  @apply border border-white/20 bg-white/80 backdrop-blur-md;
+}
+
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+
+.animate-marquee-slow:hover {
+  animation-play-state: paused;
+}
+
+.marquee-gradient-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+@supports (scrollbar-width: none) {
+  .no-scrollbar {
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+/* Custom Thin Line Scrollbar (Ganti box scrollbar default menjadi garis tipis elegan) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Scrollbar untuk area terang / halaman utama */
+main::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+main::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+/* Support Firefox / modern standard thin scrollbar */
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   Hero Section — Premium Micro-Animations
+   Seamless 8–10s loop, natural motion, no layout shift
+   ═══════════════════════════════════════════════════ */
+
+/* Camera push-in: very slow 2–3% zoom (infinite alternate) */
+.hero-camera-push {
+  animation: heroZoomIn 10s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes heroZoomIn {
+  from { transform: scale(1); }
+  to   { transform: scale(1.03); }
+}
+
+/* Cloud drift (two speed variants) */
+.hero-cloud-drift {
+  animation: heroCloudDrift 22s ease-in-out infinite;
+  will-change: transform;
+}
+.hero-cloud-drift-reverse {
+  animation: heroCloudDrift 30s ease-in-out infinite reverse;
+  will-change: transform;
+}
+@keyframes heroCloudDrift {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(35px); }
+}
+
+/* Floating cards — 3 variants with staggered timing */
+.hero-float-a {
+  animation: heroFloatA 4.2s ease-in-out infinite;
+  will-change: transform;
+}
+.hero-float-b {
+  animation: heroFloatB 5s ease-in-out infinite;
+  will-change: transform;
+}
+.hero-float-c {
+  animation: heroFloatC 3.6s ease-in-out infinite;
+  will-change: transform;
+}
+.hero-float-d {
+  animation: heroFloatD 4.6s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes heroFloatA {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes heroFloatB {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+@keyframes heroFloatC {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-13px); }
+}
+@keyframes heroFloatD {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* Button light-sweep */
+.hero-btn-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.hero-btn-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  animation: heroSweep 8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes heroSweep {
+  0%, 70% { transform: translateX(-100%); }
+  100%    { transform: translateX(250%); }
+}
+
+/* ── Hero Mascot Character — smooth natural breathing & floating animation ── */
+.hero-mascot-anim {
+  animation: heroMascotFloat 6.5s ease-in-out infinite;
+  will-change: transform, filter;
+  transform-origin: bottom center;
+}
+
+@keyframes heroMascotFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.18));
+  }
+  35% {
+    transform: translateY(-9px) rotate(0.45deg) scale(1.008);
+    filter: drop-shadow(0 30px 48px rgba(0, 0, 0, 0.22));
+  }
+  70% {
+    transform: translateY(-4px) rotate(-0.35deg) scale(1.004);
+    filter: drop-shadow(0 24px 38px rgba(0, 0, 0, 0.19));
+  }
+}
+
+/* Tablet screen gentle glow pulse (Warm Amber) */
+.hero-tablet-shine {
+  position: absolute;
+  top: 36%;
+  left: 54%;
+  width: 130px;
+  height: 85px;
+  border-radius: 16px;
+  background: radial-gradient(circle, rgba(229, 161, 37, 0.4) 0%, rgba(194, 94, 52, 0.15) 45%, transparent 70%);
+  filter: blur(12px);
+  pointer-events: none;
+  animation: tabletScreenPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes tabletScreenPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
